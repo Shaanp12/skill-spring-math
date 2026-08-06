@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#5b4bf2">
+  <title>Skill Spring Math</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="spring">
+  <header class="topbar">
+    <button class="brand" onclick="showDashboard()">
+      <span class="brand-mark">S</span>
+      <span><strong>Skill Spring Math</strong><small>Learn • Practice • Level up</small></span>
+    </button>
+    <nav class="desktop-nav">
+      <button onclick="showDashboard()">Learn</button>
+      <button onclick="showCourses()">Courses</button>
+      <button onclick="showRewards()">Rewards</button>
+      <button onclick="showProfile()">Profile</button>
+      <button onclick="showSettings()">Settings</button>
+    </nav>
+    <div class="header-stats">
+      <span>🔥 <b id="header-streak">0</b></span>
+      <span>🪙 <b id="header-coins">0</b></span>
+      <button id="header-avatar" class="avatar-button" onclick="showProfile()">🦉</button>
+    </div>
+  </header>
+
+  <main>
+    <section id="dashboard-view" class="view">
+      <div class="dashboard-layout">
+        <div class="main-column">
+          <section class="welcome-banner">
+            <div>
+              <p class="eyebrow light">WELCOME BACK</p>
+              <h1>Keep your math skills growing.</h1>
+              <p>Complete a lesson, earn rewards, and build your daily streak.</p>
+              <button class="white-button" onclick="continueLearning()">Continue learning</button>
+            </div>
+            <div class="level-orb">
+              <span>LEVEL</span>
+              <strong id="dashboard-level">1</strong>
+              <small id="level-xp-label">0 / 100 XP</small>
+            </div>
+          </section>
+
+          <section class="dashboard-section">
+            <div class="section-title">
+              <div><p class="eyebrow">TODAY</p><h2>Daily goals</h2></div>
+              <span id="today-label" class="muted"></span>
+            </div>
+            <div class="goal-grid">
+              <article class="goal-card">
+                <div class="goal-icon">⚡</div>
+                <div><strong>Earn 30 XP</strong><p id="xp-goal-text">0 / 30 XP</p></div>
+                <div class="mini-progress"><i id="xp-goal-bar"></i></div>
+              </article>
+              <article class="goal-card">
+                <div class="goal-icon">🎯</div>
+                <div><strong>Answer 10 questions</strong><p id="question-goal-text">0 / 10</p></div>
+                <div class="mini-progress"><i id="question-goal-bar"></i></div>
+              </article>
+              <article class="goal-card">
+                <div class="goal-icon">🔥</div>
+                <div><strong>Protect your streak</strong><p id="streak-goal-text">Complete one lesson today</p></div>
+                <div class="mini-progress"><i id="streak-goal-bar"></i></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="dashboard-section">
+            <div class="section-title">
+              <div><p class="eyebrow">CONTINUE</p><h2>Your next lessons</h2></div>
+              <button class="text-button" onclick="showCourses()">View all courses</button>
+            </div>
+            <div id="continue-grid" class="continue-grid"></div>
+          </section>
+
+          <section class="dashboard-section">
+            <div class="section-title">
+              <div><p class="eyebrow">PROGRESS</p><h2>Course overview</h2></div>
+            </div>
+            <div id="course-overview" class="course-overview"></div>
+          </section>
+        </div>
+
+        <aside class="sidebar">
+          <section class="panel profile-snapshot">
+            <div id="pet-display" class="pet-display">🦉</div>
+            <h3 id="pet-name-display">Sprout</h3>
+            <p class="muted">Your math companion</p>
+            <div class="pet-level"><span>Pet level</span><strong id="pet-level">1</strong></div>
+            <div class="pet-progress"><i id="pet-progress"></i></div>
+          </section>
+
+          <section class="panel">
+            <div class="side-title"><h3>Weekly activity</h3><span>🔥</span></div>
+            <div id="week-strip" class="week-strip"></div>
+          </section>
+
+          <section class="panel">
+            <div class="side-title"><h3>Latest badges</h3><button onclick="showRewards()">View all</button></div>
+            <div id="latest-badges" class="latest-badges"></div>
+          </section>
+
+          <section id="mystery-card" class="panel mystery-card">
+            <div class="mystery-box">🎁</div>
+            <div><h3>Mystery reward</h3><p id="mystery-text">Complete 5 lessons to open.</p></div>
+            <button id="mystery-button" class="secondary-button" onclick="openMysteryReward()" disabled>Locked</button>
+          </section>
+        </aside>
+      </div>
+    </section>
+
+    <section id="courses-view" class="view hidden page">
+      <div class="page-heading">
+        <div><p class="eyebrow">COURSE LIBRARY</p><h1>Choose your learning path</h1><p>Start any course. Lessons unlock in order only within that course.</p></div>
+        <input id="course-search" class="search-input" placeholder="Search courses or lessons..." oninput="renderCourses()">
+      </div>
+      <div id="courses-container" class="courses-container"></div>
+    </section>
+
+    <section id="lesson-view" class="view hidden page">
+      <button class="back-button" onclick="showCourses()">← Back to courses</button>
+      <div class="lesson-layout">
+        <article class="panel lesson-main">
+          <div class="lesson-heading">
+            <span id="lesson-course" class="tag"></span>
+            <div id="lesson-medal" class="lesson-medal">No medal yet</div>
+          </div>
+          <h1 id="lesson-title"></h1>
+          <p id="lesson-description" class="muted"></p>
+          <div id="lesson-video"></div>
+          <div class="learn-box">
+            <h3>What you will practice</h3>
+            <ul id="lesson-points"></ul>
+          </div>
+          <button class="primary-button full" onclick="startQuiz()">Start 10-question check</button>
+        </article>
+        <aside class="panel lesson-sidebar">
+          <div id="lesson-icon" class="lesson-icon"></div>
+          <h3>Lesson rewards</h3>
+          <div class="reward-line"><span>Pass lesson</span><strong>+25 XP</strong></div>
+          <div class="reward-line"><span>First-try pass</span><strong>+20 XP</strong></div>
+          <div class="reward-line"><span>Perfect score</span><strong>+15 XP</strong></div>
+          <div class="reward-line"><span>Coins</span><strong>+10 🪙</strong></div>
+          <hr>
+          <div class="best-result"><span>Best result</span><strong id="lesson-best">Not attempted</strong></div>
+          <p class="small muted">Score at least 7/10 to pass and unlock the next lesson in this course.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section id="quiz-view" class="view hidden page quiz-page">
+      <div class="quiz-topbar">
+        <button onclick="exitQuiz()">✕</button>
+        <div class="quiz-progress"><i id="quiz-progress-bar"></i></div>
+        <div class="hearts" id="quiz-hearts">♥ ♥ ♥</div>
+      </div>
+      <article class="panel quiz-card">
+        <div class="quiz-label-row"><p id="quiz-topic" class="eyebrow"></p><span id="quiz-mode-label" class="tag">Mastery quiz</span></div>
+        <h2 id="question-count"></h2>
+        <p id="question-text" class="question-text"></p>
+        <div id="answer-options" class="answer-options"></div>
+        <div id="quiz-hint" class="hint-box hidden"></div>
+        <div id="quiz-feedback" class="feedback hidden"></div>
+        <button id="hint-button" class="secondary-button full hint-button" onclick="showHint()">Show hint</button>
+        <button id="check-answer-button" class="primary-button full" onclick="checkAnswer()">Check answer</button>
+        <button id="continue-button" class="primary-button full hidden" onclick="nextQuestion()">Continue</button>
+      </article>
+    </section>
+
+    <section id="results-view" class="view hidden page">
+      <article class="panel results-card">
+        <div id="results-emoji" class="results-emoji">🎉</div>
+        <p class="eyebrow">LESSON COMPLETE</p>
+        <h1 id="results-title"></h1>
+        <div id="results-score" class="results-score"></div>
+        <div id="results-medal" class="medal-award"></div>
+        <p id="results-message" class="muted"></p>
+        <div class="reward-summary">
+          <div><span>XP earned</span><strong id="results-xp">+0</strong></div>
+          <div><span>Coins earned</span><strong id="results-coins">+0</strong></div>
+          <div><span>Streak</span><strong id="results-streak">0 days</strong></div>
+        </div>
+        <div id="new-badge-alert" class="new-badge hidden"></div>
+        <div class="result-buttons">
+          <button id="review-mistakes-button" class="secondary-button hidden" onclick="startMistakeReview()">Review mistakes</button>
+          <button class="primary-button" onclick="startQuiz()">Practice again</button>
+          <button class="secondary-button" onclick="showDashboard()">Return home</button>
+        </div>
+      </article>
+    </section>
+
+    <section id="rewards-view" class="view hidden page">
+      <div class="page-heading">
+        <div><p class="eyebrow">REWARD CENTER</p><h1>Your achievements</h1><p>Earn badges, medals, coins, themes, and avatars as you learn.</p></div>
+      </div>
+      <div class="reward-tabs">
+        <button class="active" onclick="showRewardTab('badges',this)">Badges</button>
+        <button onclick="showRewardTab('shop',this)">Reward shop</button>
+        <button onclick="showRewardTab('medals',this)">Medals</button>
+      </div>
+      <div id="badges-tab" class="reward-tab"></div>
+      <div id="shop-tab" class="reward-tab hidden"></div>
+      <div id="medals-tab" class="reward-tab hidden"></div>
+    </section>
+
+    <section id="profile-view" class="view hidden page">
+      <div class="profile-hero panel">
+        <button id="profile-avatar" class="profile-avatar" onclick="showRewards()">🦉</button>
+        <div>
+          <p class="eyebrow">STUDENT PROFILE</p>
+          <h1>Math Explorer</h1>
+          <p id="profile-subtitle" class="muted"></p>
+        </div>
+      </div>
+      <div class="profile-stat-grid">
+        <article class="panel"><span>⚡</span><strong id="profile-xp">0</strong><small>Total XP</small></article>
+        <article class="panel"><span>🪙</span><strong id="profile-coins">0</strong><small>Coins</small></article>
+        <article class="panel"><span>🔥</span><strong id="profile-streak">0</strong><small>Current streak</small></article>
+        <article class="panel"><span>✅</span><strong id="profile-lessons">0</strong><small>Lessons passed</small></article>
+        <article class="panel"><span>🥇</span><strong id="profile-gold">0</strong><small>Gold medals</small></article>
+        <article class="panel"><span>🏅</span><strong id="profile-badges">0</strong><small>Badges earned</small></article>
+      </div>
+      <div class="profile-columns">
+        <section class="panel">
+          <h2>Course completion</h2>
+          <div id="profile-courses"></div>
+        </section>
+        <section class="panel">
+          <h2>Personalization</h2>
+          <label>Pet name<input id="pet-name-input" maxlength="18"></label>
+          <button class="primary-button full" onclick="savePetName()">Save pet name</button>
+          <button class="secondary-button full spacing-top" onclick="resetProgress()">Reset all progress</button>
+        </section>
+      </div>
+    </section>
+
+    <section id="settings-view" class="view hidden page">
+      <div class="page-heading">
+        <div><p class="eyebrow">APP SETTINGS</p><h1>Customize your learning</h1><p>Control sound, question order, accessibility, installation, and progress backups.</p></div>
+      </div>
+      <div class="settings-grid">
+        <section class="panel settings-card">
+          <h2>Quiz preferences</h2>
+          <label class="toggle-row"><span><strong>Shuffle questions</strong><small>Show questions in a different order each attempt.</small></span><input id="shuffle-setting" type="checkbox" onchange="saveSettings()"></label>
+          <label class="toggle-row"><span><strong>Sound effects</strong><small>Play a small sound for answers and rewards.</small></span><input id="sound-setting" type="checkbox" onchange="saveSettings()"></label>
+          <label class="toggle-row"><span><strong>Reduced motion</strong><small>Turn off confetti and large animations.</small></span><input id="motion-setting" type="checkbox" onchange="saveSettings()"></label>
+        </section>
+        <section class="panel settings-card">
+          <h2>Install the app</h2>
+          <p class="muted">After the website is published, compatible browsers can install Skill Spring Math like an app.</p>
+          <button id="install-button" class="primary-button full" onclick="installApp()" disabled>Install option unavailable</button>
+        </section>
+        <section class="panel settings-card">
+          <h2>Progress backup</h2>
+          <p class="muted">Export progress before switching browsers or devices. Importing restores XP, medals, rewards, and course progress.</p>
+          <button class="secondary-button full" onclick="exportProgress()">Export progress</button>
+          <label class="file-button full">Import progress<input id="import-progress" type="file" accept="application/json" onchange="importProgress(event)"></label>
+        </section>
+        <section class="panel settings-card">
+          <h2>Cloud accounts</h2>
+          <p class="muted">The website is prepared for a future database, but real Google/email accounts require creating a Supabase or Firebase project and adding its private project configuration during publishing.</p>
+          <div class="status-chip">Local profiles active</div>
+        </section>
+      </div>
+    </section>
+
+  </main>
+
+  <nav class="mobile-nav">
+    <button onclick="showDashboard()">🏠<span>Home</span></button>
+    <button onclick="showCourses()">📚<span>Courses</span></button>
+    <button onclick="showRewards()">🏆<span>Rewards</span></button>
+    <button onclick="showProfile()">👤<span>Profile</span></button>
+    <button onclick="showSettings()">⚙️<span>Settings</span></button>
+  </nav>
+
+  <div id="offline-banner" class="offline-banner hidden">You are offline. Saved pages still work, but YouTube videos require internet.</div>
+  <canvas id="confetti-canvas" class="confetti-canvas"></canvas>
+  <div id="toast" class="toast hidden"></div>
+  <script src="app.js"></script>
+</body>
+</html>
